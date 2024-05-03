@@ -16,6 +16,8 @@ post_path <- here('output_analysis')
 setwd(post_path)
 source('functions_postprocessing.R')
 
+foo1(c('mco', 'dplyr', 'tidyverse', 'ggplot2', 'viridis'))
+
 ## extract results
 pareto <- get_pareto()
 
@@ -28,5 +30,5 @@ ggplot(HV, aes(Generation, HV)) +
   geom_point()
 
 ## plot Pareto solutions
-p <- plot_2D()
-p
+plot_2D()
+
