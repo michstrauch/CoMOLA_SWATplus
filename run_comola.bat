@@ -12,6 +12,10 @@
 IF EXIST "error_log.txt" (
   DEL "error_log.txt"
 )
+:: Delete init.R from previous runs if file exists.
+IF EXIST "init.Rout" (
+  DEL init.Rout
+)
 :: Read the R and python paths from the config.ini to specifically use those for executing R and python scripts
 FOR /F "tokens=2 delims==" %%r in ('FINDSTR /B /N "file_path_R = " config.ini') DO SET "r_path=%%r"
 FOR /F "tokens=2 delims==" %%p in ('FINDSTR /B /N "file_path_Python = " config.ini') DO SET "python_path=%%p"
