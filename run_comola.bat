@@ -23,7 +23,7 @@ IF NOT EXIST %r_path% (
   PAUSE>nul
   EXIT /B 0
 )
-IF NOT EXIST %pyton_path% (
+IF NOT EXIST %python_path% (
   ECHO No python.exe file can be found in %python_path%
   ECHO Please update the 'file_path_Python' in 'config.ini'
   ECHO Press any key to quit...
