@@ -47,12 +47,6 @@ IF EXIST "error_log.txt" (
 IF EXIST "init.Rout" (
   DEL init.Rout
 )
-:: Run R script to write input folder required for CoMOLA.
-%r_path% CMD BATCH write_input.R
-:: Delete R output after running write_input.R
-IF EXIST "write_input.Rout" (
-  DEL write_input.Rout
-)
 PAUSE
 :: Start CoMOLA routine.
 %python_path% __init__.py

@@ -5,6 +5,7 @@
 #
 # init.R runs before starting the CoMOLA routine. It performs checks, to 
 # catch potential issues which would cause problems in the CoMOLA routine.
+# The bottom part generates and writes the 
 # -------------------------------------------------------------------------
 
 # Load required R packages ------------------------------------------------
@@ -32,6 +33,7 @@ if(!'stringr' %in% installed.packages()) {
 }
 
 library(SWATmeasR)
+library(stringr)
 
 # Paths and parameters ----------------------------------------------------
 # Path where the SWAT txt folder and the SWAT.R script are located
@@ -117,3 +119,32 @@ if (length(swat_exe) > 1) {
               'The project folder must contain only ONE executable file!'), 
         'error_log.txt', append = TRUE)
 }
+
+# -------------------------------------------------------------------------
+# Build CoMOLA input folder
+# -------------------------------------------------------------------------
+# Build input files -------------------------------------------------------
+# Build file_HRU input file
+n_gene <- nrow(measr$.data$nswrm_definition$nswrm_locations)
+
+file_hru <- data.frame(HRU = rep(1, n_gene),
+                       Area_ha = 0,
+                       Area_rel = 1/n_gene)
+
+# Build worst_fitness_values_maximize
+r_script <- readLines(script_path)
+
+pos_out <- str_which(str_trim(r_script), '^out')
+n_crit  <- str_count(r_script[pos_out], 'fit')
+
+w_fit <- rep('0', n_crit)
+
+# Write input files -------------------------------------------------------
+if(!dir.exists(file.path(getwd(), 'input'))) {
+  dir.create(file.path(getwd(), 'input'))
+}
+write.csv(file_hru,
+          file = file.path(getwd(), 'input', 'file_HRU.csv'),
+          row.names = FALSE)
+writeLines(w_fit,
+           file.path(getwd(), 'input', 'worst_fitness_values_maximize.txt'))
