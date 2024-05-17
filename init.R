@@ -89,7 +89,7 @@ if(is.null(measr_version)) {
                'The CoMOLA workflow however requires a version >= ', 
                measr_version_min, '!'), 
         'error_log.txt', append = TRUE)
-} else if (measr_version <= measr_version_min) {
+} else if (measr_version < measr_version_min) {
   write(paste0('SWATmeasR which was used to build current measR project ', 
                'had the version ',  measr_version, '. ',
                'The CoMOLA workflow however requires a version >= ', 
@@ -102,7 +102,7 @@ if(is.null(measr_version)) {
 # 
 measr_version_installed <- as.character(packageVersion('SWATmeasR'))
 
-if(measr_version_installed <= measr_version_min) {
+if(measr_version_installed < measr_version_min) {
   write(paste0('The installed version of SWATmeasR is ', 
                measr_version_installed, '. ',
                'The CoMOLA workflow however requires a version >= ', 
