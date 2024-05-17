@@ -37,7 +37,7 @@ IF NOT EXIST %python_path% (
   EXIT /B 0
 )
 :: Run initialization and perform checks on CoMOLA setup.
-::%r_path% CMD BATCH init.R
+%r_path% CMD BATCH init.R
 :: Check if errors occured and stop batch script.
 IF EXIST "error_log.txt" (
   ECHO Initialization resulted in errors! See 'error_log.txt' and fix reported issues before re-running.
