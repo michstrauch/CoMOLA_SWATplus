@@ -1,7 +1,8 @@
 # init.R ------------------------------------------------------------------
 # 
-# Version 0.1.0 Date: 2024-05-17 Developer: Christoph Schürz
-# christoph.schuerz@ufz.de
+# Version 0.1.0 
+# Date: 2024-05-17 
+# Developer: Christoph Schürz christoph.schuerz@ufz.de
 #
 # init.R runs before starting the CoMOLA routine. It performs checks, to 
 # catch potential issues which would cause problems in the CoMOLA routine.
