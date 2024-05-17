@@ -1,47 +1,119 @@
+# init.R ------------------------------------------------------------------
+# 
+# Version 0.1.0 Date: 2024-05-17 Developer: Christoph Schürz
+# christoph.schuerz@ufz.de
+#
+# init.R runs before starting the CoMOLA routine. It performs checks, to 
+# catch potential issues which would cause problems in the CoMOLA routine.
+# -------------------------------------------------------------------------
+
+# Load required R packages ------------------------------------------------
+# Check if any of the later required R packages is not installed.
+if(!'SWATmeasR' %in% installed.packages()) {
+  write(paste0("SWATmeasR is not installed!", 
+               "Please install before re-running."),
+        'error_log.txt', append = TRUE)
+  stop()
+}
+if(!'data.table' %in% installed.packages()) {
+  install.packages('data.table')
+}
+if(!'dplyr' %in% installed.packages()) {
+  install.packages('dplyr')
+}
+if(!'purrr' %in% installed.packages()) {
+  install.packages('purrr')
+}
+if(!'readr' %in% installed.packages()) {
+  install.packages('readr')
+}
+if(!'stringr' %in% installed.packages()) {
+  install.packages('stringr')
+}
+
 library(SWATmeasR)
 
-txt_path <- file.path(getwd(),'models/SWAT')
+# Paths and parameters ----------------------------------------------------
+# Path where the SWAT txt folder and the SWAT.R script are located
+txt_path <- file.path(getwd(),'models/SWAT/txt')
+
+# Path to the SWAT.R script
+script_path <- file.path(getwd(), 'models/SWAT/SWAT.R')
+
+# Minimum required version of SWATmeasR
 measr_version_min <- '0.8.0'
 
-if(!dir.exists('./models/SWAT/txt')) {
-  write(paste0("SWAT model folder 'txt' is missing in ", txt_path),
+# -------------------------------------------------------------------------
+# Perform checks
+# -------------------------------------------------------------------------
+# Check if SWAT txt folder is available -----------------------------------
+if(!dir.exists(txt_path)) {
+  write(paste("SWAT model folder 'txt' is missing in",
+              file.path(getwd(),'models/SWAT')),
         'error_log.txt', append = TRUE)
   stop()
 }
 
+# Checks on SWATmeasR projects and versions -------------------------------
+# Find all files with file extension .measr in txt folder.
 measr_file <- list.files(txt_path, '.measr$')
 
+# Project must contain only one measR project. Report if otherwise.
 if (length(measr_file) > 1) {
-  write('Multiple SWATmeasR projects found. Project folder must contain only ONE measR project!', 
-        'error_message.txt', append = TRUE)
+  write(paste('Multiple SWATmeasR projects found.', 
+              'Project folder must contain only ONE measR project!'), 
+        'error_log.txt', append = TRUE)
 }
 
 # Check measR project version
 # Due to some updates in the SWATmeasR code a CoMOLA project requires at least
-# measr_version
+# a version defined in measr_version_min.
+# 
+# Load the measR project.
 load_measr(paste0(txt_path, '/', measr_file))
+
 # assign the data of the measr project with a specific name to the generic 
 # variable with the name 'measr'
 assign('measr', get(gsub('.measr$', '', measr_file)))
 
+# Get the measR version of the measR project.
 measr_version <- measr$.data$meta$measr_version
+
+# Check if the version of the measR project is at least measr_version_min
 if(is.null(measr_version)) {
-  write(c('SWATmeasR which was used to build current measR project had a version <=', 
-          measr_version_min, '!',
-          'The CoMOLA workflow however requires a version >=', measr_version_min), 
-        'error_message.txt', append = TRUE)
-} else if (measr_version <= '0.7.0') {
-  write(c('SWATmeasR which was used to build current measR project had the version ', 
-          measr_version, '!',
-          'The CoMOLA workflow however requires a version >=', measr_version_min), 
-        'error_message.txt', append = TRUE)
+  write(paste0('SWATmeasR which was used to build current measR project ',
+               'had a version <= ', measr_version_min, '. ',
+               'The CoMOLA workflow however requires a version >= ', 
+               measr_version_min, '!'), 
+        'error_log.txt', append = TRUE)
+} else if (measr_version <= measr_version_min) {
+  write(paste0('SWATmeasR which was used to build current measR project ', 
+               'had the version ',  measr_version, '. ',
+               'The CoMOLA workflow however requires a version >= ', 
+               measr_version_min, '!'), 
+        'error_log.txt', append = TRUE)
 }
 
-# Find executable file and check if only one exe exists.
+# Check if the version of the installed SWATmeasR is at least 
+# measr_version_min
+# 
+measr_version_installed <- as.character(packageVersion('SWATmeasR'))
+
+if(measr_version_installed <= measr_version_min) {
+  write(paste0('The installed version of SWATmeasR is ', 
+               measr_version_installed, '. ',
+               'The CoMOLA workflow however requires a version >= ', 
+               measr_version_min, '!'), 
+        'error_log.txt', append = TRUE)
+}
+
+# Check if only one SWAT exe is in txt folder -----------------------------
+# Find executable file.
 swat_exe <- list.files(txt_path, '.exe$')
 
+# Check if only one exe exists.
 if (length(swat_exe) > 1) {
-  write(c('Multiple executable files found in project folder.', 
-          'Project folder must contain only ONE executable file!'), 
-        'error_message.txt', append = TRUE)
+  write(paste('Multiple executable files found in the project folder.', 
+              'The project folder must contain only ONE executable file!'), 
+        'error_log.txt', append = TRUE)
 }
