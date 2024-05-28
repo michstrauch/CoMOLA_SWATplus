@@ -1,11 +1,12 @@
 ## Define path to your CoMOLA folder
 path <- 'F:/bonato/CoMOLA_CS1_m'
 
-## Define names of objectives (fit1, fit2, etc. must correspond with SWAT.R)
-fit1 <- 'Habitat connectivity'
-fit2 <- 'Habitat quality'
-fit3 <- 'P load (kg/a)'
-fit4 <- 'Agr. production (grain units)'
+## Define names of objectives (fit1, fit2, etc. must correspond with your 
+## specifications in models/SWAT.R)
+fit1 <- 'Objective 1' # give a more meaningful name for objective 1
+fit2 <- 'Objective 2' # give a more meaningful name for objective 2
+fit3 <- 'Objective 3' # give a more meaningful name for objective 3
+fit4 <- 'Objective 4' # give a more meaningful name for objective 4
 
 ## Execute the code below (do not modify)
 
@@ -27,7 +28,7 @@ ggplot(HV, aes(Generation, HV)) +
   geom_point()
 
 ## plot Pareto solutions
-plot_2D(mode=3)
+plot_2D(mode=1)
 
 # Use mode to modify the assignment of objectives to axis
 # for 3-dimensional plots
