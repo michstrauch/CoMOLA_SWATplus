@@ -1,5 +1,5 @@
-setwd("C:/+PAPER_WORK+/Opti-Tool/CoMOLA_CS1_240502/models/SWAT")
-sink("C:/+PAPER_WORK+/Opti-Tool/CoMOLA_CS1_240502/models/SWAT/console.txt", append=FALSE)
+setwd("C:/+PAPER_WORK+/Opti-Tool/CoMOLA_CS1_240503/models/SWAT")
+sink("C:/+PAPER_WORK+/Opti-Tool/CoMOLA_CS1_240503/models/SWAT/console.txt", append=FALSE)
 
 #-------------------------------------------------------------------------------
 ### Script to run SWAT+ within CoMOLA
@@ -65,15 +65,16 @@ grain_units <- data.frame('wbar' = 1.163,
                           'sgbt' = 1)
 
 # Define objectives. Please keep the naming syntax with fit1, fit2, ...
-fit1 <- ind_cha_aa(project_path, 'cha0926')[3] * -1 #loads should be minimized
-fit2 <- ind_cha_day(project_path, 'cha0926', 'Q_p05')[7]
-fit3 <- ind_bsn_aa_crp(project_path, names(grain_units), out_type = "yield", grain_units)[1]
+fit1 <- ind_cha_aa(txt_path, 'cha0926')[3] * -1 #loads should be minimized
+fit2 <- ind_cha_day(txt_path, 'cha0926', 'Q_p05')[7]
+fit3 <- ind_bsn_aa_crp(txt_path, names(grain_units), out_type = "yield", grain_units)[1]
 
 # Add the fit variables here. Please do not rename 'out'.
 out <- t(cbind.data.frame(fit1, fit2, fit3))
 
 write.table(out, paste0(wd,'/SWAT_output.csv'), 
             row.names = F, quote= F, col.names = F)
+
 
 
 
