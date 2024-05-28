@@ -20,9 +20,14 @@ get_pareto <- function(){
   ## define list of two
   pareto <- setNames(replicate(2,data.frame()),c('fitness', 'genomes'))
   
-  setwd(opt_path)
+  setwd(paste0(path,'/output'))
+
   logfile <- rev(dir(getwd(), pattern="_log", full.names = T))
-  logfile <- file(logfile[1],"r+")
+  logfile_short <- rev(dir(getwd(), pattern="_log", full.names = F))
+  dates <- unlist(strsplit(logfile_short, "_optimization_log.txt"))
+  datetime <- as.POSIXct(dates,format="%d-%m-%Y_%H-%M-%S",tz=Sys.timezone())
+  
+  logfile <- file(logfile[which.max(datetime)],"r+")
   text<-readLines(logfile)
   close(logfile)
   
@@ -54,7 +59,7 @@ get_pareto <- function(){
     }
     
     if(length(bestsol)>0){
-      setwd(post_path)
+      setwd(paste0(path,'/output_analysis'))
       write.table(file="pareto_genomes.txt",bestind, col.names=F, row.names=F, quote=F)
       write.table(file="pareto_fitness.txt",bestfit, col.names=F, row.names=F, quote=F)
       #write.table(file="seconds.txt",seconds, col.names=F, row.names=F, quote=F)
@@ -80,12 +85,15 @@ get_pareto <- function(){
 # calculate hypervolumes for each generation
 hv_generations <- function(){
   
-  setwd(opt_path)
+  setwd(paste0(path,'/output'))
   
   nobj = length(pareto$fitness)
   
   ind_file <- rev(dir(getwd(), pattern = 'indiv', full.names = T))
-  ind_all <- read.csv(ind_file[1], h=F, skip=1, as.is=T)
+  logfile_short <- rev(dir(getwd(), pattern="_log", full.names = F))
+  dates <- unlist(strsplit(logfile_short, "_optimization_log.txt"))
+  datetime <- as.POSIXct(dates,format="%d-%m-%Y_%H-%M-%S",tz=Sys.timezone())
+  ind_all <- read.csv(ind_file[which.max(datetime)], h=F, skip=1, as.is=T)
   
   if(nobj == 2){
     ind_all.fitness <- ind_all %>%
@@ -171,15 +179,15 @@ hv_generations <- function(){
     }
   }
   
-  setwd(post_path)
+  setwd(paste0(path,'/output_analysis'))
   names(HV) <- 'HV'
   HV$Generation <- c(1:length(HV$HV))
   return(HV)
 }
 
 # plot in 2D 
-plot_2D <- function(){
-  setwd(post_path)
+plot_2D <- function(mode=1){
+  setwd(paste0(path,'/output_analysis'))
   sol <- pareto$fitness
   
   # plot for 2 objectives
@@ -187,31 +195,78 @@ plot_2D <- function(){
     names(sol) <- c("obj1","obj2")
     p <- ggplot(sol, aes(x=obj1, y=obj2)) +
       geom_point(aes(), shape=21, col="black") +
-      xlab("Objective 1")+
-      ylab("Objective 2")
+      xlab(fit1)+
+      ylab(fit2)
   }
   
   # plot for 3 objectives
   if(length(sol)==3){
     names(sol) <- c("obj1","obj2","obj3")
-    p <- ggplot(sol, aes(x=obj1, y=obj2)) + 
-      geom_point(aes(fill=obj3), shape=21, col="black") +
-      scale_fill_gradientn(colours=viridis(100)) +
-      guides(fill = guide_legend(title="Objective 3")) +
-      xlab("Objective 1")+
-      ylab("Objective 2")
+    if(mode==1){
+      p <- ggplot(sol, aes(x=obj1, y=obj2)) + 
+        geom_point(aes(fill=obj3), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(fill = guide_legend(title=fit3)) +
+        xlab(fit1)+
+        ylab(fit2)
+    }
+    if(mode==2){
+      p <- ggplot(sol, aes(x=obj2, y=obj3)) + 
+        geom_point(aes(fill=obj1), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(fill = guide_legend(title=fit1)) +
+        xlab(fit2)+
+        ylab(fit3)
+    }
+    if(mode==3){
+      p <- ggplot(sol, aes(x=obj3, y=obj1)) + 
+        geom_point(aes(fill=obj2), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(fill = guide_legend(title=fit2)) +
+        xlab(fit3)+
+        ylab(fit1)
+    }
   }
   
   # plot for 4 objectives
   if(length(sol)==4){
     names(sol) <- c("obj1","obj2","obj3","obj4")
-    p <- ggplot(sol, aes(x=obj1, y=obj2)) + 
-      geom_point(aes(size=obj4, fill=obj3), shape=21, col="black") +
-      scale_fill_gradientn(colours=viridis(100)) +
-      guides(size = guide_legend(title="Objective 4", override.aes = list(col = "black")),
-             fill = guide_legend(title="Objective 3")) +
-      xlab("Objective 1")+
-      ylab("Objective 2")
+    if(mode==1){
+      p <- ggplot(sol, aes(x=obj1, y=obj2)) + 
+        geom_point(aes(size=obj4, fill=obj3), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit4, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit3)) +
+        xlab(fit1)+
+        ylab(fit2)
+    }
+    if(mode==2){
+      p <- ggplot(sol, aes(x=obj2, y=obj3)) + 
+        geom_point(aes(size=obj1, fill=obj4), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit1, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit4)) +
+        xlab(fit2)+
+        ylab(fit3)
+    }
+    if(mode==3){
+      p <- ggplot(sol, aes(x=obj3, y=obj4)) + 
+        geom_point(aes(size=obj2, fill=obj1), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit2, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit1)) +
+        xlab(fit3)+
+        ylab(fit4)
+    }
+    if(mode==4){
+      p <- ggplot(sol, aes(x=obj4, y=obj1)) + 
+        geom_point(aes(size=obj3, fill=obj2), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit3, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit2)) +
+        xlab(fit4)+
+        ylab(fit1)
+    }
   }
   
   return(p)
