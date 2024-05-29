@@ -11,36 +11,37 @@
 ## Sedload       | total sediment load [tons/yr]                                 | ind_cha_aa(path, channel)[4]                   | channel_sd_aa.txt
 ##---------------|---------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Q_max         | maximum daily discharge [m?/s]                                | ind_cha_day(path, channel, 'Q_max')[1]         | channel_sd_day.txt
-## Q_p95         | 95 percentile daily discharge [m?/s]                          | ind_cha_day(path, channel, 'Q_p95')[2]         | channel_sd_day.txt
-## Q_p90         | 90 percentile daily discharge [m?/s]                          | ind_cha_day(path, channel, 'Q_p90')[3]         | channel_sd_day.txt
-## Q_p50         | 50 percentile daily discharge [m?/s]                          | ind_cha_day(path, channel, 'Q_p50')[4]         | channel_sd_day.txt
-## Q_p10         | 10 percentile daily discharge [m?/s]                          | ind_cha_day(path, channel, 'Q_p10')[5]         | channel_sd_day.txt
-## Q_p05         | 5 percentile daily discharge [m?/s]                           | ind_cha_day(path, channel, 'Q_p05')[6]         | channel_sd_day.txt
-## Q_min         | minimum daily discharge [m?/s]                                | ind_cha_day(path, channel, 'Q_min')[7]         | channel_sd_day.txt
-## Q_maxmin      | max/min daily discharge ratio [m?/s]                          | ind_cha_day(path, channel, 'Q_maxmin')[8]      | channel_sd_day.txt
-## Q_p95p05      | 95 percentile/5 percentile daily discharge ratio [m?/s]       | ind_cha_day(path, channel, 'Q_p95p05')[9]      | channel_sd_day.txt
-## Q_p90p10      | 90 percentile/10 percentile daily discharge ratio [m?/s]      | ind_cha_day(path, channel, 'Q_p90p10')[10]     | channel_sd_day.txt
-## Q_low_days    | frequency daily discharge is below low flow threshold         | ind_cha_day(path, channel, 'Q_low_days', threshold_lowQ)[11]       | channel_sd_day.txt
-## Q_high_days   | frequency daily discharge is below high flow threshold        | ind_cha_day(path, channel, 'Q_high_days', threshold_highQ)[12]     | channel_sd_day.txt
-## Nconc_days    | frequency total N concentrations is below threshold           | ind_cha_day(path, channel, 'Nconc_days', threshold_N)[13]          | channel_sd_day.txt
-## Pconc_days    | frequency total P concentrations is below threshold           | ind_cha_day(path, channel, 'Pconc_days', threshold_P)[14]          | channel_sd_day.txt
-## Sedconc_days  | frequency total sediment concentrations is below threshold    | ind_cha_day(path, channel, 'Sedconc_days', threshold_Sed)[15]      | channel_sd_day.txt
+## Q_max_aa      | average maximum daily discharge of each year [m?/s]           | ind_cha_day(path, channel, 'Q_max')[2]         | channel_sd_day.txt
+## Q_p95         | 95 percentile daily discharge [m?/s]                          | ind_cha_day(path, channel, 'Q_p95')[3]         | channel_sd_day.txt
+## Q_p90         | 90 percentile daily discharge [m?/s]                          | ind_cha_day(path, channel, 'Q_p90')[4]         | channel_sd_day.txt
+## Q_p50         | 50 percentile daily discharge [m?/s]                          | ind_cha_day(path, channel, 'Q_p50')[5]         | channel_sd_day.txt
+## Q_p10         | 10 percentile daily discharge [m?/s]                          | ind_cha_day(path, channel, 'Q_p10')[6]         | channel_sd_day.txt
+## Q_p05         | 5 percentile daily discharge [m?/s]                           | ind_cha_day(path, channel, 'Q_p05')[7]         | channel_sd_day.txt
+## Q_min         | minimum daily discharge [m?/s]                                | ind_cha_day(path, channel, 'Q_min')[8]         | channel_sd_day.txt
+## Q_min_aa      | average minimum daily discharge of each year  [m?/s]          | ind_cha_day(path, channel, 'Q_min')[9]         | channel_sd_day.txt
+## Q_maxmin      | Q_max/Q_min ratio []                                          | ind_cha_day(path, channel, 'Q_maxmin')[8]      | channel_sd_day.txt
+## Q_maxmin_aa   | Q_max_aa/Q_min_aa ratio []                                    | ind_cha_day(path, channel, 'Q_maxmin')[8]      | channel_sd_day.txt
+## Q_low_days    | frequency daily discharge is below low flow threshold []      | ind_cha_day(path, channel, 'Q_low_days', threshold_lowQ)[11]       | channel_sd_day.txt
+## Q_high_days   | frequency daily discharge is below high flow threshold []     | ind_cha_day(path, channel, 'Q_high_days', threshold_highQ)[12]     | channel_sd_day.txt
+## Nconc_days    | frequency total N concentrations is below threshold []        | ind_cha_day(path, channel, 'Nconc_days', threshold_N)[13]          | channel_sd_day.txt
+## Pconc_days    | frequency total P concentrations is below threshold []        | ind_cha_day(path, channel, 'Pconc_days', threshold_P)[14]          | channel_sd_day.txt
+## Sedconc_days  | frequency total sediment concentrations is below threshold [] | ind_cha_day(path, channel, 'Sedconc_days', threshold_Sed)[15]      | channel_sd_day.txt
 ##---------------|---------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-## N_loss        | average annual Nitrogen loss from land objects [kg N/ha,yr]   | ind_hru_aa_nb(path, a)[1] # a=basin by default, a='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
-## P_loss        | average annual Phosphorus loss from land objects [kg P/ha,yr] | ind_hru_aa_nb(path, a)[3] # a=basin by default, a='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
-## Sed_loss      | average annual Sediment loss from land objects [tons/ha,yr]   | ind_hru_aa_nb(path, a)[5] # a=basin by default, a='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
-## N_loss_ratio  | average annual Nitrogen loss/input ratio []                   | ind_hru_aa_nb(path, a)[2] # a=basin by default, a='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
-## P_loss_ratio  | average annual Phosphorus loss/input ratio []                 | ind_hru_aa_nb(path, a)[4] # a=basin by default, a='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
+## N_loss        | average annual Nitrogen loss from land objects [kg N/ha,yr]   | ind_hru_aa_nb(path, area)[1] # area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
+## P_loss        | average annual Phosphorus loss from land objects [kg P/ha,yr] | ind_hru_aa_nb(path, area)[3] # area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
+## Sed_loss      | average annual Sediment loss from land objects [tons/ha,yr]   | ind_hru_aa_nb(path, area)[5] # area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
+## N_loss_ratio  | average annual Nitrogen loss/input ratio []                   | ind_hru_aa_nb(path, area)[2] # area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
+## P_loss_ratio  | average annual Phosphorus loss/input ratio []                 | ind_hru_aa_nb(path, area)[4] # area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_nb_aa.txt, hru_ls_aa.txt, hru_pw_aa.txt
 ##---------------|---------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-## sw            | average annual soil moisture [mm/yr]                          | ind_hru_aa_wb(path, a)[1] # a=basin by default, a='agr' for cropland only (hru_agr.txt must be provided!) | hru_wb_aa.txt
-## perc          | average annual percolation [mm/yr]                            | ind_hru_aa_wb(path, a)[2] # a=basin by default, a='agr' for cropland only (hru_agr.txt must be provided!) | hru_wb_aa.txt
+## sw            | average annual total soil moisture [mm]                       | ind_hru_aa_wb(path, area)[1] # area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_wb_aa.txt
+## sw300         | average annual soil moisture in top 30 cm [mm]                | ind_hru_aa_wb(path, area)[2] # area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_wb_aa.txt
+## perc          | average annual percolation [mm]                               | ind_hru_aa_wb(path, area)[3] # area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_wb_aa.txt
 ##---------------|---------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-## sw            | average soil moisture in period of interest [mm/yr]           | ind_hru_mon_wb(path, period, a)[1] # e.g. period=c(5:9), a=basin by default, a='agr' for cropland only (hru_agr.txt must be provided!) | hru_wb_mon.txt
+## sw            | average soil moisture in period of interest [mm]              | ind_hru_mon_wb(path, sw, period, area) # e.g. period=c(5:9), area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_wb_mon.txt
+## sw300         | average soil moisture (top 30cm) in period of interest [mm]   | ind_hru_mon_wb(path, sw300, period, area) # e.g. period=c(5:9), area='basin' by default, area='agr' for cropland only (hru_agr.txt must be provided!) | hru_wb_mon.txt
 ##---------------|---------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-## grain_units_aa| average annual sum of grain units in whole basin [gu]         | ind_bsn_aa_crp(path, grain_units, out_type='yield', crops_sel)[1]        | basin_crop_yld_aa.txt
-## crops_ha_aa   | average annual area of cropland in whole basin [gu]           | ind_bsn_aa_crp(path, grain_units, out_type='area', crops_sel)[1]         | basin_crop_yld_aa.txt
-## crop_yld_t_ha | average annual crop-specific yields [tons drymass/ha]         | ind_bsn_aa_crp_ha_Y(path, crops_sel)                                     | basin_crop_yld_aa.txt
-## crop_ha       | average annual crop-specific area in whole basin [ha]         | ind_bsn_aa_crp_ha_Y(path, crops_sel)                                     | basin_crop_yld_aa.txt
+## grain_units   | average annual sum of grain units in whole 'basin' []         | ind_bsn_aa_crp(path, grain_units, 'grain_units', crops_sel)        | 'basin'_crop_yld_aa.txt
+## cropland      | average annual area of cropland in whole 'basin' [ha]         | ind_bsn_aa_crp(path, grain_units, 'cropland', crops_sel)           | 'basin'_crop_yld_aa.txt
 
 foo1 <- function(x){
   for( i in x ){
@@ -288,9 +289,10 @@ ind_cha_day <- function(path,
                           
 
 # water balance related indicators based on annual average hru output
-ind_hru_aa_wb <- function(path, a = 'basin'){
+ind_hru_aa_wb <- function(path, area = 'basin'){
   
-  df_out <- data.frame(sw=NA, 
+  df_out <- data.frame(sw=NA,
+                       sw300=NA,
                        perc=NA)
   
   # Read file
@@ -301,7 +303,7 @@ ind_hru_aa_wb <- function(path, a = 'basin'){
   # Keep all hru_ls columns
   
   columns_to_keep <- c("jday", "mon", "day", "yr", "unit", "gis_id", "name", 
-                       "sw_ave", "perc")
+                       "sw_ave", "sw_300","perc")
   
   # Create a new data frame with only the selected columns
   if(a == 'basin'){
@@ -320,10 +322,12 @@ ind_hru_aa_wb <- function(path, a = 'basin'){
   # Calculate the weighted values
   df_selected_hru_wb  <- df_selected_hru_wb  %>%
     mutate(weighted_sw = sw_ave * hru_wb$area,
+           weighted_sw300 = sw_300 * hru_wb$area,
            weighted_perc = perc * hru_wb$area)
   
   # Calculate the total weighted sum
   total_weighted_sw <- sum(df_selected_hru_wb$weighted_sw, na.rm = TRUE)
+  total_weighted_sw300 <- sum(df_selected_hru_wb$weighted_sw300, na.rm = TRUE)
   total_weighted_perc <- sum(df_selected_hru_wb$weighted_perc, na.rm = TRUE)
   
   # Calculate the total area across all HRUs
@@ -331,13 +335,14 @@ ind_hru_aa_wb <- function(path, a = 'basin'){
   
   # Calculate the area-weighted averages
   df_out[1,1] <- round(total_weighted_sw / total_area,3)
-  df_out[1,2] <- round(total_weighted_perc / total_area,3)
+  df_out[1,2] <- round(total_weighted_sw300 / total_area,3)
+  df_out[1,3] <- round(total_weighted_perc / total_area,3)
   
   return(df_out)
 }
 
 # nutrient and sediment related indicators based on annual average hru output
-ind_hru_aa_nb <- function(path, a = 'basin'){
+ind_hru_aa_nb <- function(path, area = 'basin'){
   
   df_out <- data.frame(N_loss=NA, 
                        P_loss=NA,
@@ -424,69 +429,118 @@ ind_hru_aa_nb <- function(path, a = 'basin'){
 }
 
 # water balance related indicators based on monthly hru outputs
-ind_hru_mon_wb <- function(path, period = c(5:9), a = 'basin'){
+ind_hru_mon_wb <- function(path, ind = 'sw', period = c(5:9), area = 'basin'){
   
-  sw_colnames <- paste0('sw_', map_chr(period, ~paste(.x, collapse = "_")))
-  df_out <- data.frame(matrix(data=NA, nrow=1, ncol=length(sw_colnames)))
-  names(df_out) <- sw_colnames
-  
-  # Read file
-  hru_wb <- read_tbl('hru_wb_mon.txt', path, 3)
-  hru_area <- read_tbl ('hru.con', path, 2)
-  
-  # Specify the columns you want to keep for hru_nb
-  # Keep all hru_ls columns
-  
-  columns_to_keep <- c("jday", "mon", "day", "yr", "unit", "gis_id", "name", 
-                       "sw_ave")
-  
-  for(k in 1:length(period)){
-    # Create a new data frame with only the selected rows and columns
-    if(a == 'basin'){
-      df_selected_hru_wb <- hru_wb[which(hru_wb$mon %in% period[[k]]), columns_to_keep]
-      idx <- c(1:dim(hru_area)[1])
-    }else{
-      # Read in vector for agricultural area
-      hru_agr <- read.table(paste0(path[i],'/hru_agr.txt'), h=T)
-      idx <- hru_agr$hru_id
-      df_selected_hru_wb <- hru_wb[which(hru_wb$unit %in% idx & hru_wb$mon %in% period[[k]]), columns_to_keep]
+  if(ind == 'sw'){
+    sw_colnames <- paste0('sw_', map_chr(period, ~paste(.x, collapse = "_")))
+    df_out <- data.frame(matrix(data=NA, nrow=1, ncol=length(sw_colnames)))
+    names(df_out) <- sw_colnames
+    
+    # Read file
+    hru_wb <- read_tbl('hru_wb_mon.txt', path, 3)
+    hru_area <- read_tbl ('hru.con', path, 2)
+    
+    # Specify the columns you want to keep for hru_nb
+    # Keep all hru_ls columns
+    
+    columns_to_keep <- c("jday", "mon", "day", "yr", "unit", "gis_id", "name", 
+                         "sw_ave")
+    
+    for(k in 1:length(period)){
+      # Create a new data frame with only the selected rows and columns
+      if(a == 'basin'){
+        df_selected_hru_wb <- hru_wb[which(hru_wb$mon %in% period[[k]]), columns_to_keep]
+        idx <- c(1:dim(hru_area)[1])
+      }else{
+        # Read in vector for agricultural area
+        hru_agr <- read.table(paste0(path,'/hru_agr.txt'), h=T)
+        idx <- hru_agr$hru_id
+        df_selected_hru_wb <- hru_wb[which(hru_wb$unit %in% idx & hru_wb$mon %in% period[[k]]), columns_to_keep]
+      }
+      
+      # Calculate the area weighted values
+      df_selected_hru_wb  <- df_selected_hru_wb  %>%
+        left_join(hru_area %>% select(id, area), by = c("unit" = "id")) %>% 
+        mutate(weighted_sw = sw_ave * area)
+      
+      # Number of months and years
+      n_mon <- length(period[[k]])
+      n_years <- length(unique(df_selected_hru_wb$yr))
+      
+      # Calculate the total weighted sum
+      total_weighted_sw <- sum(df_selected_hru_wb$weighted_sw, na.rm = TRUE)/n_mon/n_years
+      
+      # Calculate the total area across all HRUs
+      total_area <- sum(hru_area$area[idx], na.rm = TRUE)
+      
+      # Calculate the area-weighted averages for N and P
+      df_out[1,k] <- round(total_weighted_sw / total_area,3)
     }
+  }
+  
+  if(ind == 'sw300'){
+    sw_colnames <- paste0('sw300_', map_chr(period, ~paste(.x, collapse = "_")))
+    df_out <- data.frame(matrix(data=NA, nrow=1, ncol=length(sw_colnames)))
+    names(df_out) <- sw_colnames
     
-    # Calculate the area weighted values
-    df_selected_hru_wb  <- df_selected_hru_wb  %>%
-      left_join(hru_area %>% select(id, area), by = c("unit" = "id")) %>% 
-      mutate(weighted_sw = sw_ave * area)
+    # Read file
+    hru_wb <- read_tbl('hru_wb_mon.txt', path, 3)
+    hru_area <- read_tbl ('hru.con', path, 2)
     
-    # Number of months and years
-    n_mon <- length(period[[k]])
-    n_years <- length(unique(df_selected_hru_wb$yr))
+    # Specify the columns you want to keep for hru_nb
+    # Keep all hru_ls columns
     
-    # Calculate the total weighted sum
-    total_weighted_sw <- sum(df_selected_hru_wb$weighted_sw, na.rm = TRUE)/n_mon/n_years
+    columns_to_keep <- c("jday", "mon", "day", "yr", "unit", "gis_id", "name", 
+                         "sw_300")
     
-    # Calculate the total area across all HRUs
-    total_area <- sum(hru_area$area[idx], na.rm = TRUE)
-    
-    # Calculate the area-weighted averages for N and P
-    df_out[1,k] <- round(total_weighted_sw / total_area,3)
+    for(k in 1:length(period)){
+      # Create a new data frame with only the selected rows and columns
+      if(a == 'basin'){
+        df_selected_hru_wb <- hru_wb[which(hru_wb$mon %in% period[[k]]), columns_to_keep]
+        idx <- c(1:dim(hru_area)[1])
+      }else{
+        # Read in vector for agricultural area
+        hru_agr <- read.table(paste0(path,'/hru_agr.txt'), h=T)
+        idx <- hru_agr$hru_id
+        df_selected_hru_wb <- hru_wb[which(hru_wb$unit %in% idx & hru_wb$mon %in% period[[k]]), columns_to_keep]
+      }
+      
+      # Calculate the area weighted values
+      df_selected_hru_wb  <- df_selected_hru_wb  %>%
+        left_join(hru_area %>% select(id, area), by = c("unit" = "id")) %>% 
+        mutate(weighted_sw = sw_300 * area)
+      
+      # Number of months and years
+      n_mon <- length(period[[k]])
+      n_years <- length(unique(df_selected_hru_wb$yr))
+      
+      # Calculate the total weighted sum
+      total_weighted_sw <- sum(df_selected_hru_wb$weighted_sw, na.rm = TRUE)/n_mon/n_years
+      
+      # Calculate the total area across all HRUs
+      total_area <- sum(hru_area$area[idx], na.rm = TRUE)
+      
+      # Calculate the area-weighted averages for N and P
+      df_out[1,k] <- round(total_weighted_sw / total_area,3)
+    }
   }
   
   return(df_out)
 }
 
 # crop yield related indicators (grain units) based on annual average hru output
-ind_bsn_aa_crp <- function(path, crop_sel, out_type, grain_units){
+ind_bsn_aa_crp <- function(path, crop_sel, ind, grain_units){
   
-  if (out_type == "yield") {
-    df_out <- data.frame(grain_units_aa=NA)
+  if (ind == "grain_units") {
+    df_out <- data.frame(grain_units=NA)
   } else {
-    df_out <- data.frame(crops_ha_aa=NA)
+    df_out <- data.frame(crops_ha=NA)
   }
   
   # read output file
   crop_aa <- read_tbl('basin_crop_yld_aa.txt', path, 2)
   # Index for reading
-  if (out_type == "yield") { 
+  if (ind == "grain_units") { 
     crop_sel <- names(grain_units)[match(crop_sel, names(grain_units))]
     idx <- pmatch(crop_sel, crop_aa$plant_name, duplicates.ok = T)
     # Convert yield to grain units and sum it up
