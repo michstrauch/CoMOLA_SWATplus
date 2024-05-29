@@ -65,10 +65,30 @@ grain_units <- data.frame('wbar' = 1.163,
                           'sgbt' = 1)
 
 # Define objectives. Please keep the naming syntax with fit1, fit2, ...
-fit1 <- ind_cha_aa(txt_path, 'cha0926')[3] * -1 #loads should be minimized
-fit2 <- ind_cha_day(txt_path, 'cha0926', 'Q_p05')[7]
-fit3 <- ind_bsn_aa_crp(txt_path, names(grain_units), out_type = "yield", grain_units)[1]
 
+## Optimisation objective 1: Pload
+fit1 <- ind_cha_aa(path = txt_path, 
+                   channel = 'cha0926')[3] * -1 #loads should be minimized
+
+## Optimisation objective 2: Days with streamflow > lowflow threshold
+fit2 <- ind_cha_day(path = txt_path, 
+                    channel = 'cha0926', 
+                    ind = 'Q_low_days', 
+                    threshold_lowQ = 0.0344)[12]
+
+## Optimisation objective 3: Soil water (top 30cm) for period May to June in cropland
+fit3 <- mean(as.numeric(ind_hru_mon_wb(path = txt_path,
+                                       ind = 'sw300', 
+                                       period = c(5:6), 
+                                       area = 'agr')))
+
+## Optimisation objective 4: Grain unit sum for the whole basin
+fit4 <- ind_bsn_aa_crp(path = txt_path,
+                       crop_sel = names(grain_units), 
+                       ind = 'grain_units', 
+                       grain_units = grain_units)[1]
+
+ind_bsn_aa_crp_ha_Y(txt_path, names(grain_units))
 # Add the fit variables here. Please do not rename 'out'.
 out <- t(cbind.data.frame(fit1, fit2, fit3))
 
