@@ -88,12 +88,13 @@ fit4 <- ind_bsn_aa_crp(path = txt_path,
                        ind = 'grain_units', 
                        grain_units = grain_units)[1]
 
-ind_bsn_aa_crp_ha_Y(txt_path, names(grain_units))
 # Add the fit variables here. Please do not rename 'out'.
-out <- t(cbind.data.frame(fit1, fit2, fit3))
+out <- t(cbind.data.frame(fit1, fit2, fit3, fit4))
 
 write.table(out, paste0(wd,'/SWAT_output.csv'), 
             row.names = F, quote= F, col.names = F)
+
+
 
 
 
