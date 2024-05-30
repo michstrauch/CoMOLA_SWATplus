@@ -1,5 +1,6 @@
 :: run_comola.bat
-:: version: 0.1.0
+:: Version: 0.2.0
+:: Date:    16.05.2024
 :: Author: Christoph Schürz
 :: email:  christoph.schuerz@ufz.de
 ::
@@ -8,6 +9,7 @@
 :: Then it calls the CoMOLA workflow by running the python script __init__.py
 
 @ECHO OFF
+ECHO Initializing CoMOLA run...
 :: Delete error log from previous runs if file exists.
 IF EXIST "error_log.txt" (
   DEL "error_log.txt"
@@ -47,6 +49,17 @@ IF EXIST "error_log.txt" (
 IF EXIST "init.Rout" (
   DEL init.Rout
 )
-PAUSE
 :: Start CoMOLA routine.
-%python_path% __init__.py
+ECHO Start of CoMOLA routine
+ECHO -----------------------
+:: Ask user to define the number of cores for CoMOLA run.
+:INPUT
+SET /P ncore=Define the number of cores for running CoMOLA: 
+SETLOCAL ENABLEDELAYEDEXPANSION
+ECHO !ncore!| FINDSTR /r "^[0-9]*$"
+IF ERRORLEVEL 1 (
+    ECHO Invalid input. Please enter an integer.
+    GOTO input
+)
+:: Run CoMOLA python script
+%python_path% __init__.py -t !ncore!
