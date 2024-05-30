@@ -306,7 +306,7 @@ ind_hru_aa_wb <- function(path, area = 'basin'){
                        "sw_ave", "sw_300","perc")
   
   # Create a new data frame with only the selected columns
-  if(a == 'basin'){
+  if(area == 'basin'){
     df_selected_hru_wb <- hru_wb[, columns_to_keep]
     idx <- c(1:dim(hru_wb)[1])
   }else{
@@ -364,7 +364,7 @@ ind_hru_aa_nb <- function(path, area = 'basin'){
   
   
   # Create a new data frame with only the selected columns
-  if(a == 'basin'){
+  if(area == 'basin'){
     df_selected_hru_nb <- hru_nb[, columns_to_keep]
     idx <- c(1:dim(hru_nb)[1])
   }else{
@@ -448,7 +448,7 @@ ind_hru_mon_wb <- function(path, ind = 'sw', period = c(5:9), area = 'basin'){
     
     for(k in 1:length(period)){
       # Create a new data frame with only the selected rows and columns
-      if(a == 'basin'){
+      if(area == 'basin'){
         df_selected_hru_wb <- hru_wb[which(hru_wb$mon %in% period[[k]]), columns_to_keep]
         idx <- c(1:dim(hru_area)[1])
       }else{
@@ -495,7 +495,7 @@ ind_hru_mon_wb <- function(path, ind = 'sw', period = c(5:9), area = 'basin'){
     
     for(k in 1:length(period)){
       # Create a new data frame with only the selected rows and columns
-      if(a == 'basin'){
+      if(area == 'basin'){
         df_selected_hru_wb <- hru_wb[which(hru_wb$mon %in% period[[k]]), columns_to_keep]
         idx <- c(1:dim(hru_area)[1])
       }else{
