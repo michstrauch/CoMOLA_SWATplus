@@ -48,6 +48,9 @@ set2wd(txt_path)
 swat_exe <- list.files(txt_path, '.exe$')
 system(swat_exe)
 
+# Add addional reset after the simulations to be on the safe side.
+measr$reset()
+
 ### 4 - Calculate indicators ---------------------------------------------------
 ##
 #
