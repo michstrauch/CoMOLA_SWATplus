@@ -1,5 +1,5 @@
-setwd("C:/+PAPER_WORK+/Opti-Tool/CoMOLA_CS1_240503/models/SWAT")
-sink("C:/+PAPER_WORK+/Opti-Tool/CoMOLA_CS1_240503/models/SWAT/console.txt", append=FALSE)
+setwd("S:/comola/models/SWAT")
+sink("S:/comola/models/SWAT/console.txt", append=FALSE)
 
 #-------------------------------------------------------------------------------
 ### Script to run SWAT+ within CoMOLA
@@ -7,6 +7,8 @@ sink("C:/+PAPER_WORK+/Opti-Tool/CoMOLA_CS1_240503/models/SWAT/console.txt", appe
 
 ### 1 - Load libraries and functions -------------------------------------------
 source('calc_opt_indis.R')
+source('calc_spi_indis.R') 
+source('./economic_model/CS_input_data.R')
 
 library(data.table)
 library(dplyr)
@@ -24,7 +26,7 @@ txt_path <- paste0(wd,'/txt') # path to SWAT+ model txt folder
 # Load the measR project which is located in the project path.
 measr_file <- list.files(path = txt_path, pattern = '.measr$')
 load_measr(paste0(txt_path, '/', measr_file))
-# assign the data of the measr project with a specific name to the generic
+# assign the data of the measr project with a specific name to the generic 
 # variable with the name 'measr'
 assign('measr', get(gsub('.measr$', '', measr_file)))
 
@@ -59,44 +61,52 @@ measr$reset()
 # grain units to normalize the basin wide sum of crop yields by crop-specific
 # nutritional values, please specify grain units for relevant crops
 # The grain units must be applicable to dry mass!!!
-grain_units <- data.frame('wbar' = 1.163,
-                          'csil' = 1.071,
-                          'wwht' = 1.209,
+grain_units <- data.frame('wbar' = 1.163, 
+                          'csil' = 1.071, 
+                          'wwht' = 1.209, 
                           'wira' = 1.429,
                           'barl' = 1.163,
-                          'akgs' = 0.682,
-                          'wiry' = 1.174,
+                          'akgs' = 0.682, 
+                          'wiry' = 1.174, 
                           'sgbt' = 1)
 
 # Define objectives. Please keep the naming syntax with fit1, fit2, ...
 
 ## Optimisation objective 1: Pload
-fit1 <- ind_cha_aa(path = txt_path,
-                   channel = 'cha0926')[3] * -1 #loads should be minimized
-
-## Optimisation objective 2: Days with streamflow > lowflow threshold
-fit2 <- ind_cha_day(path = txt_path,
-                    channel = 'cha0926',
-                    ind = 'Q_low_days',
-                    threshold_lowQ = 0.0344)[12]
+fit1 <- ind_cha_aa(path = txt_path, 
+                   channel = 'cha0572')[3] * -1 #loads should be minimized
 
 ## Optimisation objective 3: Soil water (top 30cm) for period May to June in cropland
-fit3 <- mean(as.numeric(ind_hru_mon_wb(path = txt_path,
-                                       ind = 'sw300',
-                                       period = c(5:6),
+fit2 <- mean(as.numeric(ind_hru_mon_wb(path = txt_path,
+                                       ind = 'sw300', 
+                                       period = c(5:6), 
                                        area = 'agr')))
 
 ## Optimisation objective 4: Grain unit sum for the whole basin
-fit4 <- ind_bsn_aa_crp(path = txt_path,
-                       crop_sel = names(grain_units),
-                       ind = 'grain_units',
-                       grain_units = grain_units)[1]
+fit3 <- ind_bsn_aa_crp(path = txt_path,
+                       crop_sel = names(grain_units), 
+                       ind = 'grain_units', 
+                       grain_units = grain_units)
+
+fit4 <- calc_measr_all_ind(measr_obj = measr, # a measr object or the complete path to the measr file
+                           impl_nswrms_list = idx, # = idx from SWAT.R
+                           measr_IC = msr_impl_costs_df,     # implementation costs: a dataframe with two column: name, value
+                           measr_MC = msr_mnt_costs_df,     # maintenance costs: a dataframe with two column: name, value
+                           measr_FP = msr_subsidies_df)       # subsidies: a dataframe with two column: name, value
+
 
 # Add the fit variables here. Please do not rename 'out'.
 out <- t(cbind.data.frame(fit1, fit2, fit3, fit4))
 
-write.table(out, paste0(wd,'/SWAT_output.csv'),
+write.table(out, paste0(wd,'/SWAT_output.csv'), 
             row.names = F, quote= F, col.names = F)
+
+
+
+
+
+
+
 
 
 
