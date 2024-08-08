@@ -174,7 +174,7 @@ if (length(econ_file) > 1) {
 # Create the spi input data.frames and write them into the script CS_input_data.R
 cs_input_path <- paste0(getwd(), '/models/SWAT/economic_model/CS_input_data.R')
 
-if(!file.exists(cs_input_path)) {
-  create_spi_pars_df(pars_xlsx_path = econ_file, 
-                     out_fn = cs_input_path)
-}
+create_spi_pars_df(pars_xlsx_path = econ_file, 
+                   out_fn = cs_input_path)
+  
+
