@@ -1,5 +1,5 @@
 ## Define path to your CoMOLA folder
-path <- 'F:/bonato/CoMOLA_CS1_m'
+path <- 'C:/+PAPER_WORK+/Opti-Tool/CoMOLA_CS1_240503'
 
 ## Define names of objectives (fit1, fit2, etc. must correspond with your 
 ## specifications in models/SWAT.R)
@@ -28,7 +28,7 @@ ggplot(HV, aes(Generation, HV)) +
   geom_point()
 
 ## plot Pareto solutions
-plot_2D(mode=1)
+plot_2D(mode=2)
 
 # Use mode to modify the assignment of objectives to axis
 # for 3-dimensional plots
