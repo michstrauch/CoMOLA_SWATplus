@@ -62,8 +62,6 @@ get_pareto <- function(){
       setwd(paste0(path,'/output_analysis'))
       write.table(file="pareto_genomes.txt",bestind, col.names=F, row.names=F, quote=F)
       write.table(file="pareto_fitness.txt",bestfit, col.names=F, row.names=F, quote=F)
-      #write.table(file="seconds.txt",seconds, col.names=F, row.names=F, quote=F)
-      #write.table(file="feasible.txt",feasible, col.names=F, row.names=F, quote=F)
     }
   }
   
@@ -82,6 +80,58 @@ get_pareto <- function(){
   return(pareto)
 }
 
+write_sq <- function(){
+  
+  setwd(paste0(path,'/output'))
+  
+  nobj = length(pareto$fitness)
+  
+  ind_file <- rev(dir(getwd(), pattern = 'indiv', full.names = T))
+  logfile_short <- rev(dir(getwd(), pattern="_log", full.names = F))
+  dates <- unlist(strsplit(logfile_short, "_optimization_log.txt"))
+  datetime <- as.POSIXct(dates,format="%d-%m-%Y_%H-%M-%S",tz=Sys.timezone())
+  ind_all <- read.csv(ind_file[which.max(datetime)], h=F, skip=1, as.is=T)
+  
+  if(nobj == 2){
+    ind_all.fitness <- ind_all %>%
+      mutate(V3 = as.numeric(gsub('\\[', '', V3)),
+             V4 = as.numeric(gsub('\\]', '', V4))) %>%
+      mutate(fit1 = V3,
+             fit2 = V4) %>% 
+      dplyr::select(fit1, fit2)
+    sq_fitness <- ind_all.fitness[1,]
+    setwd(paste0(path,'/output_analysis'))
+    write.table(file="sq_fitness.txt",sq_fitness, col.names=F, row.names=F, quote=F)
+  }
+  
+  if(nobj == 3){
+    ind_all.fitness <- ind_all %>%
+      mutate(V3 = as.numeric(gsub('\\[', '', V3)),
+             V5 = as.numeric(gsub('\\]', '', V5))) %>%
+      mutate(fit1 = V3,
+             fit2 = V4,
+             fit3 = V5) %>% 
+      dplyr::select(fit1, fit2, fit3)
+    sq_fitness <- ind_all.fitness[1,]
+    setwd(paste0(path,'/output_analysis'))
+    write.table(file="sq_fitness.txt",sq_fitness, col.names=F, row.names=F, quote=F)
+  }
+  
+  if(nobj == 4){
+    ind_all.fitness <- ind_all %>%
+      mutate(V3 = as.numeric(gsub('\\[', '', V3)),
+             V6 = as.numeric(gsub('\\]', '', V6))) %>%
+      mutate(fit1 = V3,
+             fit2 = V4,
+             fit3 = V5,
+             fit4 = V6) %>% 
+      dplyr::select(fit1, fit2, fit3, fit4)
+    sq_fitness <- ind_all.fitness[1,]
+    setwd(paste0(path,'/output_analysis'))
+    write.table(file="sq_fitness.txt",sq_fitness, col.names=F, row.names=F, quote=F)
+  }
+}
+
 # calculate hypervolumes for each generation
 hv_generations <- function(){
   
@@ -98,7 +148,12 @@ hv_generations <- function(){
   if(nobj == 2){
     ind_all.fitness <- ind_all %>%
       mutate(V3 = as.numeric(gsub('\\[', '', V3)),
-             V4 = as.numeric(gsub('\\]', '', V4))) %>% 
+             V4 = as.numeric(gsub('\\]', '', V4)))
+    
+    if(ind_all.fitness$V3[which.max(ind_all.fitness$V3)]==0) ind_all.fitness$V3[which(ind_all.fitness$V3==ind_all.fitness$V3[which.max(ind_all.fitness$V3)])] <- -0.00001
+    if(ind_all.fitness$V4[which.max(ind_all.fitness$V4)]==0) ind_all.fitness$V4[which(ind_all.fitness$V4==ind_all.fitness$V4[which.max(ind_all.fitness$V4)])] <- -0.00001
+
+    ind_all.fitness <- ind_all.fitness %>% 
       mutate(fit1 = ifelse(V3>=0, V3*-1/max(V3), -1/(V3/max(V3))),
              fit2 = ifelse(V4>=0, V4*-1/max(V4), -1/(V4/max(V4)))) %>% 
       dplyr::select(fit1, fit2)
@@ -125,7 +180,13 @@ hv_generations <- function(){
   if(nobj == 3){
     ind_all.fitness <- ind_all %>%
       mutate(V3 = as.numeric(gsub('\\[', '', V3)),
-             V5 = as.numeric(gsub('\\]', '', V5))) %>% 
+             V5 = as.numeric(gsub('\\]', '', V5)))
+    
+    if(ind_all.fitness$V3[which.max(ind_all.fitness$V3)]==0) ind_all.fitness$V3[which(ind_all.fitness$V3==ind_all.fitness$V3[which.max(ind_all.fitness$V3)])] <- -0.00001
+    if(ind_all.fitness$V4[which.max(ind_all.fitness$V4)]==0) ind_all.fitness$V4[which(ind_all.fitness$V4==ind_all.fitness$V4[which.max(ind_all.fitness$V4)])] <- -0.00001
+    if(ind_all.fitness$V5[which.max(ind_all.fitness$V5)]==0) ind_all.fitness$V5[which(ind_all.fitness$V5==ind_all.fitness$V5[which.max(ind_all.fitness$V5)])] <- -0.00001
+
+    ind_all.fitness <- ind_all.fitness %>%
       mutate(fit1 = ifelse(V3>=0, V3*-1/max(V3), -1/(V3/max(V3))),
              fit2 = ifelse(V4>=0, V4*-1/max(V4), -1/(V4/max(V4))),
              fit3 = ifelse(V5>=0, V5*-1/max(V5), -1/(V5/max(V5)))) %>% 
@@ -153,7 +214,14 @@ hv_generations <- function(){
   if(nobj == 4){
     ind_all.fitness <- ind_all %>%
       mutate(V3 = as.numeric(gsub('\\[', '', V3)),
-             V6 = as.numeric(gsub('\\]', '', V6))) %>% 
+             V6 = as.numeric(gsub('\\]', '', V6)))
+    
+    if(ind_all.fitness$V3[which.max(ind_all.fitness$V3)]==0) ind_all.fitness$V3[which(ind_all.fitness$V3==ind_all.fitness$V3[which.max(ind_all.fitness$V3)])] <- -0.00001
+    if(ind_all.fitness$V4[which.max(ind_all.fitness$V4)]==0) ind_all.fitness$V4[which(ind_all.fitness$V4==ind_all.fitness$V4[which.max(ind_all.fitness$V4)])] <- -0.00001
+    if(ind_all.fitness$V5[which.max(ind_all.fitness$V5)]==0) ind_all.fitness$V5[which(ind_all.fitness$V5==ind_all.fitness$V5[which.max(ind_all.fitness$V5)])] <- -0.00001
+    if(ind_all.fitness$V6[which.max(ind_all.fitness$V6)]==0) ind_all.fitness$V6[which(ind_all.fitness$V6==ind_all.fitness$V6[which.max(ind_all.fitness$V6)])] <- -0.00001
+    
+    ind_all.fitness <- ind_all.fitness %>%
       mutate(fit1 = ifelse(V3>=0, V3*-1/max(V3), -1/(V3/max(V3))),
              fit2 = ifelse(V4>=0, V4*-1/max(V4), -1/(V4/max(V4))),
              fit3 = ifelse(V5>=0, V5*-1/max(V5), -1/(V5/max(V5))),
@@ -193,10 +261,19 @@ plot_2D <- function(mode=1){
   # plot for 2 objectives
   if(length(sol)==2){
     names(sol) <- c("obj1","obj2")
-    p <- ggplot(sol, aes(x=obj1, y=obj2)) +
-      geom_point(aes(), shape=21, col="black") +
-      xlab(fit1)+
-      ylab(fit2)
+    if(mode==1){
+      p <- ggplot(sol, aes(x=obj1, y=obj2)) +
+        geom_point(aes(), shape=21, col="black") +
+        xlab(fit1)+
+        ylab(fit2)
+    }
+    if(mode==2){
+      p <- ggplot(sol, aes(x=obj1, y=obj2)) +
+        geom_point(aes(), shape=21, col="black") +
+        xlab(fit2)+
+        ylab(fit1)
+    }
+    p
   }
   
   # plot for 3 objectives
@@ -211,6 +288,22 @@ plot_2D <- function(mode=1){
         ylab(fit2)
     }
     if(mode==2){
+      p <- ggplot(sol, aes(x=obj1, y=obj3)) + 
+        geom_point(aes(fill=obj2), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(fill = guide_legend(title=fit2)) +
+        xlab(fit1)+
+        ylab(fit3)
+    }
+    if(mode==3){
+      p <- ggplot(sol, aes(x=obj2, y=obj1)) + 
+        geom_point(aes(fill=obj3), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(fill = guide_legend(title=fit3)) +
+        xlab(fit2)+
+        ylab(fit1)
+    }
+    if(mode==4){
       p <- ggplot(sol, aes(x=obj2, y=obj3)) + 
         geom_point(aes(fill=obj1), shape=21, col="black") +
         scale_fill_gradientn(colours=viridis(100)) +
@@ -218,7 +311,7 @@ plot_2D <- function(mode=1){
         xlab(fit2)+
         ylab(fit3)
     }
-    if(mode==3){
+    if(mode==5){
       p <- ggplot(sol, aes(x=obj3, y=obj1)) + 
         geom_point(aes(fill=obj2), shape=21, col="black") +
         scale_fill_gradientn(colours=viridis(100)) +
@@ -226,6 +319,15 @@ plot_2D <- function(mode=1){
         xlab(fit3)+
         ylab(fit1)
     }
+    if(mode==6){
+      p <- ggplot(sol, aes(x=obj3, y=obj2)) + 
+        geom_point(aes(fill=obj1), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(fill = guide_legend(title=fit1)) +
+        xlab(fit3)+
+        ylab(fit2)
+    }
+    p
   }
   
   # plot for 4 objectives
@@ -240,7 +342,79 @@ plot_2D <- function(mode=1){
         xlab(fit1)+
         ylab(fit2)
     }
+    if(mode==1){
+      p <- ggplot(sol, aes(x=obj1, y=obj2)) + 
+        geom_point(aes(size=obj4, fill=obj3), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit4, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit3)) +
+        xlab(fit1)+
+        ylab(fit2)
+    }
     if(mode==2){
+      p <- ggplot(sol, aes(x=obj1, y=obj2)) + 
+        geom_point(aes(size=obj3, fill=obj4), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit3, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit4)) +
+        xlab(fit1)+
+        ylab(fit2)
+    }
+    if(mode==3){
+      p <- ggplot(sol, aes(x=obj1, y=obj3)) + 
+        geom_point(aes(size=obj2, fill=obj4), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit2, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit4)) +
+        xlab(fit1)+
+        ylab(fit3)
+    }
+    if(mode==4){
+      p <- ggplot(sol, aes(x=obj1, y=obj3)) + 
+        geom_point(aes(size=obj4, fill=obj2), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit4, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit2)) +
+        xlab(fit1)+
+        ylab(fit3)
+    }
+    if(mode==5){
+      p <- ggplot(sol, aes(x=obj1, y=obj4)) + 
+        geom_point(aes(size=obj2, fill=obj3), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit2, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit3)) +
+        xlab(fit1)+
+        ylab(fit4)
+    }
+    if(mode==6){
+      p <- ggplot(sol, aes(x=obj1, y=obj4)) + 
+        geom_point(aes(size=obj3, fill=obj2), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit3, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit2)) +
+        xlab(fit1)+
+        ylab(fit4)
+    }
+    if(mode==7){
+      p <- ggplot(sol, aes(x=obj2, y=obj1)) + 
+        geom_point(aes(size=obj3, fill=obj4), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit3, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit4)) +
+        xlab(fit2)+
+        ylab(fit1)
+    }
+    if(mode==8){
+      p <- ggplot(sol, aes(x=obj2, y=obj1)) + 
+        geom_point(aes(size=obj4, fill=obj3), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit4, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit3)) +
+        xlab(fit2)+
+        ylab(fit1)
+    }
+    if(mode==9){
       p <- ggplot(sol, aes(x=obj2, y=obj3)) + 
         geom_point(aes(size=obj1, fill=obj4), shape=21, col="black") +
         scale_fill_gradientn(colours=viridis(100)) +
@@ -249,7 +423,70 @@ plot_2D <- function(mode=1){
         xlab(fit2)+
         ylab(fit3)
     }
-    if(mode==3){
+    if(mode==10){
+      p <- ggplot(sol, aes(x=obj2, y=obj3)) + 
+        geom_point(aes(size=obj4, fill=obj1), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit4, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit1)) +
+        xlab(fit2)+
+        ylab(fit3)
+    }
+    if(mode==11){
+      p <- ggplot(sol, aes(x=obj2, y=obj4)) + 
+        geom_point(aes(size=obj1, fill=obj3), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit1, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit3)) +
+        xlab(fit2)+
+        ylab(fit4)
+    }
+    if(mode==12){
+      p <- ggplot(sol, aes(x=obj2, y=obj4)) + 
+        geom_point(aes(size=obj3, fill=obj1), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit3, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit1)) +
+        xlab(fit2)+
+        ylab(fit4)
+    }
+    if(mode==13){
+      p <- ggplot(sol, aes(x=obj3, y=obj1)) + 
+        geom_point(aes(size=obj2, fill=obj4), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit2, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit4)) +
+        xlab(fit3)+
+        ylab(fit1)
+    }
+    if(mode==14){
+      p <- ggplot(sol, aes(x=obj3, y=obj1)) + 
+        geom_point(aes(size=obj4, fill=obj2), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit4, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit2)) +
+        xlab(fit3)+
+        ylab(fit1)
+    }
+    if(mode==15){
+      p <- ggplot(sol, aes(x=obj3, y=obj2)) + 
+        geom_point(aes(size=obj1, fill=obj4), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit1, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit4)) +
+        xlab(fit3)+
+        ylab(fit2)
+    }
+    if(mode==16){
+      p <- ggplot(sol, aes(x=obj3, y=obj2)) + 
+        geom_point(aes(size=obj4, fill=obj1), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit4, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit1)) +
+        xlab(fit3)+
+        ylab(fit2)
+    }
+    if(mode==17){
       p <- ggplot(sol, aes(x=obj3, y=obj4)) + 
         geom_point(aes(size=obj2, fill=obj1), shape=21, col="black") +
         scale_fill_gradientn(colours=viridis(100)) +
@@ -258,7 +495,25 @@ plot_2D <- function(mode=1){
         xlab(fit3)+
         ylab(fit4)
     }
-    if(mode==4){
+    if(mode==18){
+      p <- ggplot(sol, aes(x=obj3, y=obj4)) + 
+        geom_point(aes(size=obj2, fill=obj1), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit2, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit1)) +
+        xlab(fit3)+
+        ylab(fit4)
+    }
+    if(mode==19){
+      p <- ggplot(sol, aes(x=obj4, y=obj1)) + 
+        geom_point(aes(size=obj2, fill=obj3), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit2, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit3)) +
+        xlab(fit4)+
+        ylab(fit1)
+    }
+    if(mode==20){
       p <- ggplot(sol, aes(x=obj4, y=obj1)) + 
         geom_point(aes(size=obj3, fill=obj2), shape=21, col="black") +
         scale_fill_gradientn(colours=viridis(100)) +
@@ -266,9 +521,44 @@ plot_2D <- function(mode=1){
                fill = guide_legend(title=fit2)) +
         xlab(fit4)+
         ylab(fit1)
+    }   
+    if(mode==21){
+      p <- ggplot(sol, aes(x=obj4, y=obj2)) + 
+        geom_point(aes(size=obj1, fill=obj3), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit1, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit3)) +
+        xlab(fit4)+
+        ylab(fit2)
+    }    
+    if(mode==22){
+      p <- ggplot(sol, aes(x=obj4, y=obj2)) + 
+        geom_point(aes(size=obj3, fill=obj1), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit3, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit1)) +
+        xlab(fit4)+
+        ylab(fit2)
+    } 
+    if(mode==23){
+      p <- ggplot(sol, aes(x=obj4, y=obj3)) + 
+        geom_point(aes(size=obj1, fill=obj2), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit1, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit2)) +
+        xlab(fit4)+
+        ylab(fit3)
+    }    
+    if(mode==24){
+      p <- ggplot(sol, aes(x=obj4, y=obj3)) + 
+        geom_point(aes(size=obj2, fill=obj1), shape=21, col="black") +
+        scale_fill_gradientn(colours=viridis(100)) +
+        guides(size = guide_legend(title=fit2, override.aes = list(col = "black")),
+               fill = guide_legend(title=fit1)) +
+        xlab(fit4)+
+        ylab(fit3)
     }
   }
-  
-  return(p)
-  
+  p
 }
+
