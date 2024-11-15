@@ -14,6 +14,11 @@ is.integer0 <- function(x){
   is.integer(x) && length(x) == 0L
 }
 
+# fixing np int print issue
+foo4 <- function(df){
+  gsub(pattern = "np.int64\\(|\\)", replacement = "", x = df)
+}
+
 # extract fitness values and genomes of Pareto solutions
 get_pareto <- function(){
   
@@ -57,13 +62,10 @@ get_pareto <- function(){
         bestfit[k] <- substr(bestfit[k], 3, nchar(bestfit[k])-1) 
       }
     }
-    
-    if(length(bestsol)>0){
-      setwd(paste0(path,'/output_analysis'))
-      write.table(file="pareto_genomes.txt",bestind, col.names=F, row.names=F, quote=F)
-      write.table(file="pareto_fitness.txt",bestfit, col.names=F, row.names=F, quote=F)
-    }
   }
+  
+  
+  
   
   bestfit_df <- data.frame(do.call(rbind, strsplit(bestfit, ", ", fixed=TRUE)))
   bestfit_df <- data.frame(lapply(bestfit_df,as.numeric))
@@ -71,8 +73,15 @@ get_pareto <- function(){
   
   
   bestind_df <- data.frame(do.call(cbind, strsplit(bestind, ", ", fixed=TRUE)))
+  bestind_df <- data.frame(lapply(bestind_df, foo4))
   bestind_df <- data.frame(lapply(bestind_df,as.numeric))
   names(bestind_df) <- paste0('ind',1:length(bestind_df))
+  
+  if(length(bestsol)>0){
+    setwd(paste0(path,'/output_analysis'))
+    write.table(file="pareto_genomes.txt",bestind_df, col.names=F, row.names=F, quote=F)
+    write.table(file="pareto_fitness.txt",bestfit_df, col.names=F, row.names=F, quote=F)
+  }
   
   pareto[[1]] <- bestfit_df
   pareto[[2]] <- bestind_df
