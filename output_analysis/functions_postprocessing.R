@@ -142,7 +142,7 @@ write_sq <- function(){
 }
 
 # calculate hypervolumes for each generation
-hv_generations <- function(scaled=F){
+hv_generations <- function(){
   
   setwd(paste0(path,'/output'))
   
