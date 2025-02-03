@@ -142,7 +142,7 @@ write_sq <- function(){
 }
 
 # calculate hypervolumes for each generation
-hv_generations <- function(){
+hv_generations <- function(scaled=F){
   
   setwd(paste0(path,'/output'))
   
@@ -162,11 +162,31 @@ hv_generations <- function(){
     if(ind_all.fitness$V3[which.max(ind_all.fitness$V3)]==0) ind_all.fitness$V3[which(ind_all.fitness$V3==ind_all.fitness$V3[which.max(ind_all.fitness$V3)])] <- -0.00001
     if(ind_all.fitness$V4[which.max(ind_all.fitness$V4)]==0) ind_all.fitness$V4[which(ind_all.fitness$V4==ind_all.fitness$V4[which.max(ind_all.fitness$V4)])] <- -0.00001
 
-    ind_all.fitness <- ind_all.fitness %>% 
-      mutate(fit1 = ifelse(V3>=0, V3*-1/max(V3), -1/(V3/max(V3))),
-             fit2 = ifelse(V4>=0, V4*-1/max(V4), -1/(V4/max(V4)))) %>% 
+    # if values range from - to +, rearrange to - only by subtracting the max value
+    min_V3 <- min(ind_all.fitness$V3)
+    min_V4 <- min(ind_all.fitness$V4)
+    max_V3 <- max(ind_all.fitness$V3)
+    max_V4 <- max(ind_all.fitness$V4)
+    
+    ind_all.fitness <- ind_all.fitness %>%
+      dplyr::rowwise() %>%
+      mutate(fit1 = ifelse(min_V3<0 & max_V3>0, V3-max_V3-0.00001, V3),
+             fit2 = ifelse(min_V4<0 & max_V4>0, V4-max_V4-0.00001, V4)) %>% 
       dplyr::select(fit1, fit2)
     
+    # scale dimensions by their respective maximum value (best = -1, worst = 0)
+    min_fit1 <- min(ind_all.fitness$fit1)
+    min_fit2 <- min(ind_all.fitness$fit2)
+    max_fit1 <- max(ind_all.fitness$fit1)
+    max_fit2 <- max(ind_all.fitness$fit2)
+    
+    ind_all.fitness <- ind_all.fitness %>%
+      dplyr::rowwise() %>%
+      mutate(fit1 = ifelse(max_fit1>=0, (fit1 - min_fit1)/(max_fit1 - min_fit1)*-1, (fit1 - min_fit1)/(min_fit1 - max_fit1)),
+             fit2 = ifelse(max_fit2>=0, (fit2 - min_fit2)/(max_fit2 - min_fit2)*-1, (fit2 - min_fit2)/(min_fit2 - max_fit2))) %>% 
+      dplyr::select(fit1, fit2)
+    
+    # ref point must be vector of zeros
     ref <- matrix(data=0,nrow=1, ncol=2)
     maxgen <- max(ind_all$V1)+1
     HV <- data.frame(matrix(data=NA,nrow=maxgen,ncol=1))
@@ -195,12 +215,37 @@ hv_generations <- function(){
     if(ind_all.fitness$V4[which.max(ind_all.fitness$V4)]==0) ind_all.fitness$V4[which(ind_all.fitness$V4==ind_all.fitness$V4[which.max(ind_all.fitness$V4)])] <- -0.00001
     if(ind_all.fitness$V5[which.max(ind_all.fitness$V5)]==0) ind_all.fitness$V5[which(ind_all.fitness$V5==ind_all.fitness$V5[which.max(ind_all.fitness$V5)])] <- -0.00001
 
+    # if values range from - to +, rearrange to - only by subtracting the max value
+    min_V3 <- min(ind_all.fitness$V3)
+    min_V4 <- min(ind_all.fitness$V4)
+    min_V5 <- min(ind_all.fitness$V5)
+    max_V3 <- max(ind_all.fitness$V3)
+    max_V4 <- max(ind_all.fitness$V4)
+    max_V5 <- max(ind_all.fitness$V5)
+    
     ind_all.fitness <- ind_all.fitness %>%
-      mutate(fit1 = ifelse(V3>=0, V3*-1/max(V3), -1/(V3/max(V3))),
-             fit2 = ifelse(V4>=0, V4*-1/max(V4), -1/(V4/max(V4))),
-             fit3 = ifelse(V5>=0, V5*-1/max(V5), -1/(V5/max(V5)))) %>% 
+      dplyr::rowwise() %>%
+      mutate(fit1 = ifelse(min_V3<0 & max_V3>0, V3-max_V3-0.00001, V3),
+             fit2 = ifelse(min_V4<0 & max_V4>0, V4-max_V4-0.00001, V4),
+             fit3 = ifelse(min_V5<0 & max_V5>0, V5-max_V5-0.00001, V5)) %>% 
       dplyr::select(fit1, fit2, fit3)
     
+    # scale dimensions by their respective maximum value (best = -1, worst = 0)
+    min_fit1 <- min(ind_all.fitness$fit1)
+    min_fit2 <- min(ind_all.fitness$fit2)
+    min_fit3 <- min(ind_all.fitness$fit3)
+    max_fit1 <- max(ind_all.fitness$fit1)
+    max_fit2 <- max(ind_all.fitness$fit2)
+    max_fit3 <- max(ind_all.fitness$fit3)
+    
+    ind_all.fitness <- ind_all.fitness %>%
+      dplyr::rowwise() %>%
+      mutate(fit1 = ifelse(max_fit1>=0, (fit1 - min_fit1)/(max_fit1 - min_fit1)*-1, (fit1 - min_fit1)/(min_fit1 - max_fit1)),
+             fit2 = ifelse(max_fit2>=0, (fit2 - min_fit2)/(max_fit2 - min_fit2)*-1, (fit2 - min_fit2)/(min_fit2 - max_fit2)),
+             fit3 = ifelse(max_fit3>=0, (fit3 - min_fit3)/(max_fit3 - min_fit3)*-1, (fit3 - min_fit3)/(min_fit3 - max_fit3))) %>% 
+      dplyr::select(fit1, fit2, fit3)
+    
+    # ref point must be vector of zeros
     ref <- matrix(data=0,nrow=1, ncol=3)
     maxgen <- max(ind_all$V1)+1
     HV <- data.frame(matrix(data=NA,nrow=maxgen,ncol=1))
@@ -225,19 +270,50 @@ hv_generations <- function(){
       mutate(V3 = as.numeric(gsub('\\[', '', V3)),
              V6 = as.numeric(gsub('\\]', '', V6)))
     
+    # if maximum is 0, set to -0.00001
     if(ind_all.fitness$V3[which.max(ind_all.fitness$V3)]==0) ind_all.fitness$V3[which(ind_all.fitness$V3==ind_all.fitness$V3[which.max(ind_all.fitness$V3)])] <- -0.00001
     if(ind_all.fitness$V4[which.max(ind_all.fitness$V4)]==0) ind_all.fitness$V4[which(ind_all.fitness$V4==ind_all.fitness$V4[which.max(ind_all.fitness$V4)])] <- -0.00001
     if(ind_all.fitness$V5[which.max(ind_all.fitness$V5)]==0) ind_all.fitness$V5[which(ind_all.fitness$V5==ind_all.fitness$V5[which.max(ind_all.fitness$V5)])] <- -0.00001
     if(ind_all.fitness$V6[which.max(ind_all.fitness$V6)]==0) ind_all.fitness$V6[which(ind_all.fitness$V6==ind_all.fitness$V6[which.max(ind_all.fitness$V6)])] <- -0.00001
     
+    # if values range from - to +, rearrange to - only by subtracting the max value
+    min_V3 <- min(ind_all.fitness$V3)
+    min_V4 <- min(ind_all.fitness$V4)
+    min_V5 <- min(ind_all.fitness$V5)
+    min_V6 <- min(ind_all.fitness$V6)
+    max_V3 <- max(ind_all.fitness$V3)
+    max_V4 <- max(ind_all.fitness$V4)
+    max_V5 <- max(ind_all.fitness$V5)
+    max_V6 <- max(ind_all.fitness$V6)
+    
     ind_all.fitness <- ind_all.fitness %>%
-      mutate(fit1 = ifelse(V3>=0, V3*-1/max(V3), -1/(V3/max(V3))),
-             fit2 = ifelse(V4>=0, V4*-1/max(V4), -1/(V4/max(V4))),
-             fit3 = ifelse(V5>=0, V5*-1/max(V5), -1/(V5/max(V5))),
-             fit4 = ifelse(V6>=0, V6*-1/max(V6), -1/(V6/max(V6)))) %>% 
+      dplyr::rowwise() %>%
+      mutate(fit1 = ifelse(min_V3<0 & max_V3>0, V3-max_V3-0.00001, V3),
+             fit2 = ifelse(min_V4<0 & max_V4>0, V4-max_V4-0.00001, V4),
+             fit3 = ifelse(min_V5<0 & max_V5>0, V5-max_V5-0.00001, V5),
+             fit4 = ifelse(min_V6<0 & max_V6>0, V6-max_V6-0.00001, V6)) %>% 
       dplyr::select(fit1, fit2, fit3, fit4)
     
+    # scale dimensions by their respective maximum value (best = -1, worst = 0)
+    min_fit1 <- min(ind_all.fitness$fit1)
+    min_fit2 <- min(ind_all.fitness$fit2)
+    min_fit3 <- min(ind_all.fitness$fit3)
+    min_fit4 <- min(ind_all.fitness$fit4)
+    max_fit1 <- max(ind_all.fitness$fit1)
+    max_fit2 <- max(ind_all.fitness$fit2)
+    max_fit3 <- max(ind_all.fitness$fit3)
+    max_fit4 <- max(ind_all.fitness$fit4)
+    
+    ind_all.fitness <- ind_all.fitness %>%
+      dplyr::rowwise() %>%
+      mutate(fit1 = ifelse(max_fit1>=0, (fit1 - min_fit1)/(max_fit1 - min_fit1)*-1, (fit1 - min_fit1)/(min_fit1 - max_fit1)),
+             fit2 = ifelse(max_fit2>=0, (fit2 - min_fit2)/(max_fit2 - min_fit2)*-1, (fit2 - min_fit2)/(min_fit2 - max_fit2)),
+             fit3 = ifelse(max_fit3>=0, (fit3 - min_fit3)/(max_fit3 - min_fit3)*-1, (fit3 - min_fit3)/(min_fit3 - max_fit3)),
+             fit4 = ifelse(max_fit4>=0, (fit4 - min_fit4)/(max_fit4 - min_fit4)*-1, (fit4 - min_fit4)/(min_fit4 - max_fit4)))
+    
+    # ref point must be vector of zeros
     ref <- matrix(data=0,nrow=1, ncol=4)
+
     maxgen <- max(ind_all$V1)+1
     HV <- data.frame(matrix(data=NA,nrow=maxgen,ncol=1))
     
