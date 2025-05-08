@@ -1,5 +1,5 @@
 # spi parameters
-# origin: C:/+PAPER_WORK+/Opti-Tool/CoMOLA_CS1_240503/models/SWAT/economic_model/CS_input_data.xlsx
+# origin: F:/mstrauch/CoMOLA_OPTAIN_CS1/models/SWAT/economic_model/CS_input_data.xlsx
 
 crop_prices_df = data.frame(
 "name" = c("rnge", "wwht", "wira", "wbar", "wiry", "akgs", "csil", "barl", "radi", "sgbt", "frst", "fesc", "orcd", "rngb", "wetl", "frsd"),
@@ -29,13 +29,13 @@ crop_prod_costs_mgt_df = data.frame(
 )
 
 msr_impl_costs_df = data.frame(
-"name" = c("buffer", "hedge", "grassslope", "contr_drn", "pond", "lowtillcc"),
-"value" = c(0, 2500, 27, 0, 7407, 134)
+"name" = c("buffer", "hedge", "grassslope", "pond", "lowtillcc"),
+"value" = c(0, 2500, 27, 7407, 134)
 )
 
 msr_mnt_costs_df = data.frame(
-"name" = c("buffer", "hedge", "grassslope", "contr_drn", "pond", "lowtillcc"),
-"value" = c(25, 23460, 25, 0, 27466, -53)
+"name" = c("buffer", "hedge", "grassslope", "pond", "lowtillcc"),
+"value" = c(-896, 22539, -896, 26545, -53)
 )
 
 msr_subsidies_df = data.frame(

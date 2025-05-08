@@ -79,6 +79,7 @@ def read_ini_file():
     dict_default_alg.update({'max_repair_trials' : '0'})
     dict_default_alg.update({'write_tabu_memory' : 'False'})
     dict_default_alg.update({'plot_results' : 'False'})
+    dict_default_alg.update({'start_from_previous_gen' : 'False'})
     dict_default_alg.update({'maximize' : 'True'})
     dict_default_alg.update({'selector' : 'default_selection'})
     dict_default_alg.update({'variator' : 'default_variation'})
@@ -304,6 +305,7 @@ class EaConfig:
         self.max_repair_trials = int(dict_alg['max_repair_trials'])
         self.write_tabu_memory = strtobool(dict_alg['write_tabu_memory'])
         self.plot_results = strtobool(dict_alg['plot_results'])
+        self.start_from_previous_gen = strtobool(dict_alg['start_from_previous_gen'])
         
 ea = EaConfig()
 
