@@ -311,7 +311,7 @@ ind_hru_aa_wb <- function(path, area = 'basin'){
     idx <- c(1:dim(hru_wb)[1])
   }else{
     # Read in vector for agricultural area
-    hru_agr <- read.table(paste0(path[i],'/hru_agr.txt'), h=T)
+    hru_agr <- read.table(paste0(path,'/hru_agr.txt'), h=T)
     idx <- hru_agr$hru_id
     df_selected_hru_wb <- hru_wb[idx, columns_to_keep]
   }
